@@ -5,7 +5,6 @@ from . import menu
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('select_group'))
 def handle_change_user_group(call):
-    print('Вызов select_group')
     group_id = call.data.replace("select_group_", "")
     save_group_info(call.from_user.id, group_id)
     menu.show_main_menu(call.from_user.id)

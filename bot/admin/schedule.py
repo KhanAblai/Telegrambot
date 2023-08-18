@@ -14,7 +14,6 @@ def show_groups(telegram_id):
     groups = Groups.select()
     markup = InlineKeyboardMarkup()
     for group in groups:
-        print('генерируем кнопки с группами ' + str(group.id))
         markup.add(InlineKeyboardButton(group.name, callback_data=f'group_id_schedule_change_{group.id}'))
     bot.send_message(telegram_id, text='Выберите группу ', reply_markup=markup)
 
@@ -55,16 +54,13 @@ def show_subject_change_menu(telegram_id, day, group_id):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('sch_subject_add_'))
 def schedule_subject_add(call):
-    print('Выбрали добавление', call.data)
     sch_rep = call.data.replace('sch_subject_add_', '')
     sch_arr = sch_rep.split('_')
     group_id = sch_arr[0]
-    print('Получаем груп айди в добавлении предмета', group_id)
     day = sch_arr[1]
     subjects = Subjects.select()
     markup = InlineKeyboardMarkup()
     for item in subjects:
-        print('Итерация добавления предмета', 'sbj_select_' + str(item.id) + '_' + group_id + '_' + day)
         markup.add(
             InlineKeyboardButton(item.name, callback_data='sbj_select_' + str(item.id) + '_' + group_id + '_' + day))
     bot.send_message(call.from_user.id, text='Выберите предмет который хотите добавить', reply_markup=markup)
@@ -81,7 +77,6 @@ def schedule_subject_update(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('subject_'))
 def subject_update_or_delete(call):
-    print('Выбрали предмет', call.data)
     schedule_id = call.data.replace('subject_', '')
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton('Удалить', callback_data='sch_subject_delete' + schedule_id))
@@ -91,7 +86,6 @@ def subject_update_or_delete(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('sch_subject_delete'))
 def subject_delete(call):
-    print('Выбрали удаление')
     schedule_id = call.data.replace('sch_subject_delete', '')
     schedule = Schedules.get(Schedules.id == schedule_id)
     schedule.delete_instance()
@@ -116,9 +110,7 @@ def handler_ask_lesson_start(call):
         sch_arr = sch_rep.split('_')
         subject_id = sch_arr[0]
         group_id = sch_arr[1]
-        print('Узнаем лесон старт груп айди', group_id)
         day = sch_arr[2]
-        print(sch_arr)
         schedule = Schedules.create(day=day, group_id=group_id, subject_id=subject_id)
         message = bot.send_message(call.from_user.id, text='Введите новое время для урока в формате ЧЧ:мм,пример 09:00')
         bot.register_next_step_handler(message, lambda message: handler_change_lesson_time(message, schedule.id))
