@@ -5,6 +5,8 @@ from datetime import timedelta, datetime
 
 
 @bot.message_handler(content_types=['text'], regexp='Расписание')
+def show_schedules_menu(message):
+    pass
 def user_schedules_menu(message):
     markup = InlineKeyboardMarkup()
     markup.row_width = 2
