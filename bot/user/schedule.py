@@ -30,7 +30,6 @@ def schedule_get(call):
         day = datetime.now().day
     if day == 'tomorrow':
         day = (datetime.now() + timedelta(days=1)).day
-    print(day, user.group_id)
     Schedules.create(subject_id=1)
     schedule = Schedules.select().where(Schedules.day == int(day), Schedules.group_id == user.group_id.id)
     subjs = ''
@@ -39,6 +38,5 @@ def schedule_get(call):
         subject = item.subject_id.name
         lesson_start = item.lesson_start
         lesson_end = item.lesson_end
-        print(subject,lesson_end,lesson_start)
         subjs += subject + ': ' + lesson_start + ' - ' + lesson_end + '\n'
     bot.send_message(call.from_user.id, text='Расписание на ' + days[int(day)] + ':\n' + subjs + ' \n' + ' \n')
